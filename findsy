@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Prodotti da Google Sheets</title>
+  <style>
+    .prodotto {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 10px;
+      width: 200px;
+      display: inline-block;
+      vertical-align: top;
+      text-align: center;
+    }
+    .prodotto img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Prodotti</h1>
+  <div id="prodotti"></div>
+
+  <script>
+    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/https://docs.google.com/spreadsheets/d/e/2PACX-1vQEHSMNINtiJHcYNKaJGf28VnWczeJEBkl7O5UNFrCLuQvodzjLM9SMlwd8aPiHaS5LwAj9PVDT6grT/pub?gid=0&single=true&output=csv/pub?output=csv'; // sostituisci con il tuo
+
+    fetch(csvUrl)
+      .then(response => response.text())
+      .then(data => {
+        const righe = data.trim().split('\n');
+        const intestazioni = righe[0].split(',');
+
+        for (let i = 1; i < righe.length; i++) {
+          const valori = righe[i].split(',');
+
+          const prodotto = {
+            nome: valori[0],
+            prezzo: valori[1],
+            foto: valori[2],
+            link: valori[3]
+          };
+
+          const html = `
+            <div class="prodotto">
+              <img src="${prodotto.foto}" alt="${prodotto.nome}">
+              <h3>${prodotto.nome}</h3>
+              <p>Prezzo: €${prodotto.prezzo}</p>
+              <a href="${prodotto.link}" target="_blank">Dettagli</a>
+            </div>
+          `;
+          document.getElementById('prodotti').innerHTML += html;
+        }
+      })
+      .catch(error => {
+        console.error("Errore nel caricamento dei dati:", error);
+      });
+  </script>
+</body>
+</html>
